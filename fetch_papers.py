@@ -53,8 +53,8 @@ if __name__ == "__main__":
   parser.add_argument('--start-index', type=int, default=0, help='0 = most recent API result')
   parser.add_argument('--max-index', type=int, default=100000, help='upper bound on paper index we will fetch')
   parser.add_argument('--results-per-iteration', type=int, default=100, help='passed to arxiv API')
-  parser.add_argument('--wait-time', type=float, default=3.0, help='lets be gentle to arxiv API (in number of seconds)')
-  parser.add_argument('--break-on-no-added', type=int, default=1, help='break out early if all returned query papers are already in db? 1=yes, 0=no')
+  parser.add_argument('--wait-time', type=float, default=10.0, help='lets be gentle to arxiv API (in number of seconds)')
+  parser.add_argument('--break-on-no-added', type=int, default=0, help='break out early if all returned query papers are already in db? 1=yes, 0=no')
   args = parser.parse_args()
 
   # misc hardcoded variables
@@ -114,6 +114,10 @@ if __name__ == "__main__":
       print('No new papers were added. Assuming no new papers exist. Exiting.')
       break
 
+    if num_added > 0:
+      print('Saving database with %d papers to %s' % (len(db), Config.db_path))
+      safe_pickle_dump(db, Config.db_path)
+
     print('Added a total of %i papers. Now sleeping for %i seconds' % (num_added_total, args.wait_time , ))
     time.sleep(args.wait_time + random.uniform(0, 3))
 
@@ -121,4 +125,3 @@ if __name__ == "__main__":
   if num_added_total > 0:
     print('Saving database with %d papers to %s' % (len(db), Config.db_path))
     safe_pickle_dump(db, Config.db_path)
-
