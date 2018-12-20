@@ -15,8 +15,8 @@ import feedparser
 from utils import Config, safe_pickle_dump
 
 def encode_feedparser_dict(d):
-  """ 
-  helper function to get rid of feedparser bs with a deep copy. 
+  """
+  helper function to get rid of feedparser bs with a deep copy.
   I hate when libs wrap simple things in their own classes.
   """
   if isinstance(d, feedparser.FeedParserDict) or isinstance(d, dict):
@@ -33,7 +33,7 @@ def encode_feedparser_dict(d):
     return d
 
 def parse_arxiv_url(url):
-  """ 
+  """
   examples is http://arxiv.org/abs/1512.08756v2
   we want to extract the raw id and the version
   """
@@ -51,9 +51,9 @@ if __name__ == "__main__":
                       default='cat:cs.CV+OR+cat:cs.AI+OR+cat:cs.LG+OR+cat:cs.CL+OR+cat:cs.NE+OR+cat:stat.ML',
                       help='query used for arxiv API. See http://arxiv.org/help/api/user-manual#detailed_examples')
   parser.add_argument('--start-index', type=int, default=0, help='0 = most recent API result')
-  parser.add_argument('--max-index', type=int, default=10000, help='upper bound on paper index we will fetch')
+  parser.add_argument('--max-index', type=int, default=100000, help='upper bound on paper index we will fetch')
   parser.add_argument('--results-per-iteration', type=int, default=100, help='passed to arxiv API')
-  parser.add_argument('--wait-time', type=float, default=5.0, help='lets be gentle to arxiv API (in number of seconds)')
+  parser.add_argument('--wait-time', type=float, default=3.0, help='lets be gentle to arxiv API (in number of seconds)')
   parser.add_argument('--break-on-no-added', type=int, default=1, help='break out early if all returned query papers are already in db? 1=yes, 0=no')
   args = parser.parse_args()
 
@@ -114,7 +114,7 @@ if __name__ == "__main__":
       print('No new papers were added. Assuming no new papers exist. Exiting.')
       break
 
-    print('Sleeping for %i seconds' % (args.wait_time , ))
+    print('Added a total of %i papers. Now sleeping for %i seconds' % (num_added_total, args.wait_time , ))
     time.sleep(args.wait_time + random.uniform(0, 3))
 
   # save the database before we quit, if we found anything new
