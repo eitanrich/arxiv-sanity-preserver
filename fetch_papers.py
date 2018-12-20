@@ -88,7 +88,7 @@ if __name__ == "__main__":
       if len(parse.entries) > 0:
         break
       print('Received no results from arxiv. Rate limiting? Try %i/%i.' % (r+1, args.num_retries))
-      time.sleep(args.wait_time*2 + random.uniform(0, 3))
+      time.sleep(args.wait_time*(r+1) + random.uniform(0, 3))
 
     num_added = 0
     num_skipped = 0
