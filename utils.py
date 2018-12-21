@@ -4,6 +4,7 @@ import os
 import re
 import pickle
 import tempfile
+from shutil import move
 
 # global settings
 # -----------------------------------------------------------------------------
@@ -81,7 +82,10 @@ def open_atomic(filepath, *args, **kwargs):
             if fsync:
                 f.flush()
                 os.fsync(f.fileno())
-        os.rename(tmppath, filepath)
+        if os.name == 'nt':
+            move(tmppath, filepath)
+        else:
+            os.rename(tmppath, filepath)
 
 def safe_pickle_dump(obj, fname):
     with open_atomic(fname, 'wb') as f:
